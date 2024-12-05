@@ -1,0 +1,48 @@
+src/
+├── assets/                   # Static assets like images, fonts, etc.
+│   ├── logo.svg
+│   ├── background.jpg
+│   └── some-font.ttf
+├── components/               # Reusable UI components
+│   ├── Button/               # Folder for Button component
+│   │   ├── Button.js         # Component logic (Titlecase)
+│   │   ├── Button.scss       # Component-specific styles (Lowercase)
+│   ├── Card/                 # Folder for Card component
+│   │   ├── Card.js           # Component logic (Titlecase)
+│   │   ├── Card.scss         # Component-specific styles (Lowercase)
+│   ├── Navbar/               # Folder for Navbar component
+│   │   ├── Navbar.js         # Component logic (Titlecase)
+│   │   ├── Navbar.scss       # Component-specific styles (Lowercase)
+│   └── [Other Components]/   # Additional components as needed
+├── pages/                    # Pages of the app, usually connected to routes
+│   ├── Home/                 # Home page folder
+│   │   ├── Home.js           # Page logic (Titlecase)
+│   │   ├── Home.scss         # Page-specific styles (Lowercase)
+│   ├── About/                # About page folder
+│   │   ├── About.js          # Page logic (Titlecase)
+│   │   ├── About.scss        # Page-specific styles (Lowercase)
+│   └── [Other Pages]/        # Additional pages as needed
+├── services/                 # API calls, external integrations, business logic
+│   ├── api.js                # API request handling (Lowercase)
+│   ├── auth.js               # Authentication logic (Lowercase)
+│   └── [Other Services]/     # Other services like payment, notifications, etc.
+├── store/                    # Application state management (e.g., Redux, Zustand)
+│   ├── store.js              # Store logic (Lowercase)
+│   ├── actions.js            # Action creators (Lowercase)
+│   └── reducers.js           # Reducers (Lowercase)
+├── utils/                    # Utility functions and helpers
+│   ├── format.js             # Formatting functions (Lowercase)
+│   ├── validate.js           # Validation helpers (Lowercase)
+│   └── [Other Utilities]/    # Other helper functions
+├── styles/                   # Global styles (fonts, colors, mixins, etc.)
+│   ├── global.scss           # Global styles (Lowercase)
+│   ├── mixins.scss           # Global mixins (Lowercase)
+│   ├── variables.scss        # Global variables (Lowercase)
+│   └── reset.scss            # CSS reset (Lowercase)
+├── themes/                   # Theme-related files (light, dark, custom themes)
+│   ├── light-theme.scss      # Light theme styles (Lowercase)
+│   ├── dark-theme.scss       # Dark theme styles (Lowercase)
+│   └── theme-config.js       # JavaScript configuration for theme switching
+├── App.js                    # Root app component
+├── index.js                  # Entry point for React
+└── vite.config.ts            # Vite configuration
