@@ -18,7 +18,7 @@ function App() {
         menuDataRender={() => [
           {
             path: "/",
-            name: "Home",
+            name: "Transactions",
             icon: <HomeOutlined />,
           },
           {
@@ -38,25 +38,23 @@ function App() {
         )}
       >
         <PageContainer
-          content="Welcome to the ProLayout component"
+          content="Track and tag all paid expenses in your organization"
           tabList={[
             {
-              tab: "base information",
-              key: "base",
+              tab: "Invoices",
+              key: "invoice",
             },
             {
-              tab: "details",
-              key: "info",
+              tab: "Reimbursements",
+              key: "reimbursements",
             },
           ]}
           extra={[
-            <Button key="3">Operation</Button>,
-            <Button key="2">Operation</Button>,
-            <Button key="1" type="primary">
-              Primary Action
-            </Button>,
+            <Button key="goToSettings">Manage settings</Button>,
           ]}
-        ></PageContainer>
+        >
+          
+        </PageContainer>
       </ProLayout>
     </>
   );
