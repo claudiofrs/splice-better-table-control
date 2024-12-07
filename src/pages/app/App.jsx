@@ -1,6 +1,6 @@
+import "../../index.css"
 import Sidebar from "../../components/Sidebar/Sidebar"
 import Topbar from "../../components/Topbar/Topbar";
-import "../../index.css";
 import "./App.css";
 
 function App() {

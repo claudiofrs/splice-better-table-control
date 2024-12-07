@@ -2,9 +2,13 @@
 import daisyui from "daisyui";
 
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Noto Sans"', "sans-serif"], // Set Noto Sans globally as the default sans font
+      },
+    },
   },
   daisyui: {
     themes: [
@@ -19,6 +23,9 @@ export default {
           success: "#84cc16",
           warning: "#f59e0b",
           error: "#fb7185",
+          fontFamily: {
+            sans: '"Noto Sans", sans-serif', // Apply Noto Sans to all DaisyUI components
+          },
         },
       },
     ],
