@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types"; // Import PropTypes
 import Tab from "./Tab"; // Assuming Tab is in a separate file
 
 // HorizontalTab Component
@@ -12,7 +13,7 @@ const HorizontalTab = ({ tabData }) => {
     };
 
     return (
-        <div role="tablist" className="tabs h-auto flex tabs-md border-b border-[#eaeaea] ">
+        <div role="tablist" className="tabs h-auto flex tabs-md border-b border-[#eaeaea]">
             {tabData.map((tab, index) => (
                 <Tab
                     key={index}
@@ -23,6 +24,15 @@ const HorizontalTab = ({ tabData }) => {
             ))}
         </div>
     );
+};
+
+// PropTypes validation
+HorizontalTab.propTypes = {
+    tabData: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string.isRequired, // Each tab should have a label
+        })
+    ).isRequired, // The tabData prop must be an array of objects, each with a label
 };
 
 export default HorizontalTab;

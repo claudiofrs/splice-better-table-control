@@ -19,7 +19,7 @@ function App() {
       {/* Content Area */}
       <main className="flex-1 bg-white">
         <Topbar />
-        <div className="p-4 py-6">
+        <div className="p-4 py-4">
           <h1 className="text-2xl font-semibold mb-4">
             Transactions
           </h1>
