@@ -1,4 +1,6 @@
-const SidebarMenuItem = ({ href, text, state }) => {
+import PropTypes from 'prop-types';
+
+const SidebarMenuItem = ({ href, label, state }) => {
     // Define default, active and hover styles
     const baseStyle = "px-3 py-2 rounded hover:bg-[#1b3351] hover:text-white";
     const defaultStyle = "text-[#c8d0d8]"; // Default text color
@@ -12,9 +14,15 @@ const SidebarMenuItem = ({ href, text, state }) => {
             href={href}
             className={`${baseStyle} ${textStyle} active:text-white`}
         >
-            {text}
+            {label}
         </a>
     );
+};
+
+SidebarMenuItem.propTypes = {
+    href: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    state: PropTypes.string.isRequired,
 };
 
 export default SidebarMenuItem;

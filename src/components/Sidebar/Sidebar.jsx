@@ -12,15 +12,15 @@ function Sidebar() {
             className="h-6 w-auto"
           />
         </div>
-        <SidebarMenuItem href="#home" text="Home" state="default" />
-        <SidebarMenuItem href="#transactions" text="Transactions" state="active" />
-        <SidebarMenuItem href="#reports" text="Reports" state="default" />
-        <SidebarMenuItem href="#invoices" text="Invoices" state="default" />
-        <SidebarMenuItem href="#approval" text="Approval Policies" state="default" />
+        <SidebarMenuItem href="#home" label="Home" state="default" />
+        <SidebarMenuItem href="#transactions" label="Transactions" state="active" />
+        <SidebarMenuItem href="#reports" label="Reports" state="default" />
+        <SidebarMenuItem href="#invoices" label="Invoices" state="default" />
+        <SidebarMenuItem href="#approval" label="Approval Policies" state="default" />
       </div>
       <div className="flex flex-col space-y-2 py-2">
-        <SidebarMenuItem href="#companySettings" text="Company Settings" state="default" />
-        <SidebarMenuItem href="#Log out" text="Log out" state="default" />
+        <SidebarMenuItem href="#companySettings" label="Company Settings" state="default" />
+        <SidebarMenuItem href="#Log out" label="Log out" state="default" />
       </div>
     </aside>
   );
