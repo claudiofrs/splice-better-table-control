@@ -1,12 +1,12 @@
 function Topbar() {
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 px-4">
       <div className="flex-1">
-        <div className="form-control">
+        <div className="form-control w-96">
           <input
             type="text"
             placeholder="Search"
-            className="input input-bordered w-24 md:w-auto"
+            className="input input-bordered"
           />
         </div>
       </div>

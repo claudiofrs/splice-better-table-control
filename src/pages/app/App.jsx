@@ -11,12 +11,11 @@ function App() {
       {/* Content Area */}
       <main className="flex-1 bg-white">
         <Topbar />
-        <div className="p-4">
+        <div className="p-4 py-2">
           <h1 className="text-2xl font-semibold mb-2">
-            Welcome to the Dashboard
+            Transactions
           </h1>
-          <p>Select a menu item on the sidebar to view content.</p>
-          <button className="btn btn-active btn-primary">Primary</button>
+
         </div>
       </main>
     </div>
