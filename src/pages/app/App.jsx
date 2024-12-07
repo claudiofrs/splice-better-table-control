@@ -1,16 +1,25 @@
-//import "../../index.css";
+import Sidebar from "../../components/Sidebar/SIdebar";
+import Topbar from "../../components/Topbar/Topbar";
+import "../../index.css";
 import "./App.css";
 
 function App() {
   return (
-    <>
-      <div className="bg-blue-500 text-white p-4">
-        <h1 className="text-3xl font-bold">Hello Tailwind CSS!</h1>
-      </div>
-      <div>
-        <h1>Testing header</h1>
-      </div>
-    </>
+    <div className="flex h-screen">
+      <Sidebar />
+
+      {/* Content Area */}
+      <main className="flex-1 bg-white">
+        <Topbar />
+        <div className="p-4">
+          <h1 className="text-2xl font-semibold mb-2">
+            Welcome to the Dashboard
+          </h1>
+          <p>Select a menu item on the sidebar to view content.</p>
+          <button className="btn btn-active btn-primary">Primary</button>
+        </div>
+      </main>
+    </div>
   );
 }
 
