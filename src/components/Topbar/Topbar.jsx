@@ -1,6 +1,6 @@
 function Topbar() {
   return (
-    <div className="navbar bg-base-100 px-4">
+    <div className="navbar bg-base-100 px-4 drop-shadow-sm">
       <div className="flex-1">
         <div className="form-control w-96">
           <input
@@ -20,7 +20,8 @@ function Topbar() {
             <div className="w-10 rounded-full">
               <img
                 alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                //src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                src="https://www.gravatar.com/avatar/7993?d=retro"
               />
             </div>
           </div>
