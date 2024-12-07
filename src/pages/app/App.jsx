@@ -1,4 +1,4 @@
-import Sidebar from "../../components/Sidebar/SIdebar";
+import Sidebar from "../../components/Sidebar/Sidebar"
 import Topbar from "../../components/Topbar/Topbar";
 import "../../index.css";
 import "./App.css";
@@ -6,7 +6,7 @@ import "./App.css";
 function App() {
   return (
     <div className="flex h-screen">
-      <Sidebar />
+      <Sidebar></Sidebar>
 
       {/* Content Area */}
       <main className="flex-1 bg-white">
