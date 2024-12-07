@@ -3,8 +3,8 @@ import SidebarMenuItem from "./SidebarMenuItem";
 
 function Sidebar() {
   return (
-    <aside className="w-[280px] bg-[#0a2240] text-white p-2 py-0 flex flex-col justify-between gap-2">
-      <div className="flex flex-col space-y-2">
+    <aside className="w-[280px] bg-[#0a2240] text-white p-2 py-0 flex flex-col justify-between">
+      <div className="flex flex-col space-y-1">
         <div className="flex justify-left p-4 py-5 border-b border-solid" style={{ borderColor: '#3a4d66' }}>
           <img
             src="https://summitglobal.com/hs-fs/hubfs/summit-logo.png?width=264&height=45&name=summit-logo.png"
