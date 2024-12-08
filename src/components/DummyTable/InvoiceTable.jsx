@@ -154,39 +154,40 @@ const InvoiceTable = () => {
 
     return (
         <>
-            <div className="flex items-center justify-between space-x-4 py-4">
-                {/* Left Group Control */}
-                <div className="flex items-center space-x-2">
-                    {/* Button with AI Gemini gradient border */}
-                    <Button
-                        className="justify-start border-1 border-blue-500 rounded-[4px] text-gray-900 font-normal px-3"
-                        type="default"
-                        icon={<SparklesIcon className="size-4 text-blue-500" />}
-                        size="medium"
-                    >
-                        Search and modify your data view with Summit AI
-                    </Button>
+            <div className="flex flex-col gap-2 p-3 bg-[#f7fafc] rounded-lg mt-3">
+                <div className="flex items-center justify-between space-x-4 py-1">
+                    {/* Left Group Control */}
+                    <div className="flex items-center space-x-2">
+                        {/* Button with AI Gemini gradient border */}
+                        <Button
+                            className="justify-start border-1 border-blue-500 rounded-[4px] text-gray-900 font-normal px-3"
+                            type="default"
+                            icon={<SparklesIcon className="size-4 text-blue-500" />}
+                            size="medium"
+                        >
+                            Search and modify your data view with Summit AI
+                        </Button>
 
-                    {/* Button with Chevron down icon */}
-                    <Button
-                        className="flex items-center font-normal rounded-[4px] px-3"
-                        type="default"
-                        icon={<EyeIcon className="size-4" />}
-                        size="medium"
-                    >
-                        Change View
-                    </Button>
+                        {/* Button with Chevron down icon */}
+                        <Button
+                            className="flex items-center font-normal rounded-[4px] px-3"
+                            type="default"
+                            icon={<EyeIcon className="size-4" />}
+                            size="medium"
+                        >
+                            Change View
+                        </Button>
 
-                    {/* Button with Columns label */}
-                    <Button
-                        className="flex items-center font-normal rounded-[4px]"
-                        type="default"
-                        icon={<TableCellsIcon className="size-4" />}
-                        size="medium"
-                    >
-                        Columns
-                    </Button>
-                    {/* 
+                        {/* Button with Columns label */}
+                        <Button
+                            className="flex items-center font-normal rounded-[4px]"
+                            type="default"
+                            icon={<TableCellsIcon className="size-4" />}
+                            size="medium"
+                        >
+                            Columns
+                        </Button>
+                        {/* 
                     <Button
                         type="primary"
                         onClick={() => {
@@ -202,54 +203,56 @@ const InvoiceTable = () => {
                         Open Table Settings
                     </Button> */}
 
-                    {/* Button with Group By label */}
-                    <Button
-                        className="flex items-center font-normal rounded-[4px]"
-                        type="default"
-                        icon={<QueueListIcon className="size-4" />}
-                        size="medium"
-                    >
-                        Group By
-                    </Button>
-                </div>
+                        {/* Button with Group By label */}
+                        <Button
+                            className="flex items-center font-normal rounded-[4px]"
+                            type="default"
+                            icon={<QueueListIcon className="size-4" />}
+                            size="medium"
+                        >
+                            Group By
+                        </Button>
+                    </div>
 
-                {/* Right Group Control */}
-                <div className="flex items-center space-x-4">
-                    {/* Toggle Switch with custom color change */}
-                    <label className="flex items-center space-x-2">
-                        <span className="text-sm font-normal">Filter</span>
-                        <Switch
-                            defaultChecked={filterEnabled}
-                            checkedChildren="On"
-                            unCheckedChildren="Off"
-                            onChange={handleFilterToggle}
-                            className="custom-toggle"
-                        />
-                    </label>
+                    {/* Right Group Control */}
+                    <div className="flex items-center space-x-4">
+                        {/* Toggle Switch with custom color change */}
+                        <label className="flex items-center space-x-2">
+                            <span className="text-sm font-normal">Filter</span>
+                            <Switch
+                                defaultChecked={filterEnabled}
+                                checkedChildren="On"
+                                unCheckedChildren="Off"
+                                onChange={handleFilterToggle}
+                                className="custom-toggle"
+                            />
+                        </label>
 
-                    {/* Button with Download icon */}
-                    <Button
-                        className="rounded-[8px] bg-primary"
-                        type="primary"
-                        icon={<DownloadOutlined />}
-                        size="medium"
-                    >
-                        Export
-                    </Button>
+                        {/* Button with Download icon */}
+                        <Button
+                            className="rounded-[8px] bg-primary"
+                            type="primary"
+                            icon={<DownloadOutlined />}
+                            size="medium"
+                        >
+                            Export
+                        </Button>
+                    </div>
                 </div>
+                <ProTable
+                    actionRef={toggleColumnRef}
+                    columns={columns}
+                    dataSource={data}
+                    rowKey="id"
+                    pagination={{
+                        pageSize: 10, // Number of items per page
+                    }}
+                    search={false} // Disable search functionality for simplicity
+                    options={false} // Disable default toolbar
+                />
             </div>
 
-            <ProTable
-                actionRef={toggleColumnRef}
-                columns={columns}
-                dataSource={data}
-                rowKey="id"
-                pagination={{
-                    pageSize: 10, // Number of items per page
-                }}
-                search={false} // Disable search functionality for simplicity
-                options={false} // Disable default toolbar
-            /></>
+        </>
     );
 };
 
