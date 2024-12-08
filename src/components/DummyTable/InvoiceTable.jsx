@@ -120,9 +120,9 @@ const InvoiceTable = () => {
                 <div className="flex items-center space-x-2">
                     {/* Button with AI Gemini gradient border */}
                     <Button
-                        className="justify-start border-1 border-[#4F46E5] rounded-[4px] text-gray-900 font-normal px-3"
+                        className="justify-start border-1 border-blue-500 rounded-[4px] text-gray-900 font-normal px-3 pr-4"
                         type="default"
-                        icon={<SparklesIcon className="size-4" />}
+                        icon={<SparklesIcon className="size-4 text-blue-500" />}
                         size="medium"
                     >
                         Search and modify your data view with Summit AI
