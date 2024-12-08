@@ -18,3 +18,26 @@
 .custom-toggle .ant-switch .ant-switch-inner {
   color: #333; /* Solid gray text when unchecked */
 }
+
+/* Add this CSS to your global styles or CSS file */
+.filter-enabled-header {
+  background-color: rgba(10, 34, 64, 0.8) !important; /* Success color */
+  color: #ffffff !important; /* White text */
+}
+
+.filter-enabled-header svg {
+  /* Success color */
+  fill: #ffffff !important; /* White text */
+}
+.ant-table-thead .filter-enabled-header::before {
+  content: none !important;
+  background-color: transparent !important;
+  width: 0 !important;
+  height: 0 !important;
+  transform: none !important;
+}
+
+.filter-disabled-header {
+  background-color: transparent;
+  color: black; /* Default text color */
+}

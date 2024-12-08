@@ -1,3 +1,4 @@
+import React, { useRef, useState } from 'react';
 import { ProTable } from "@ant-design/pro-components";
 import "antd/dist/reset.css";
 import dataInvoiceTable from "./dataInvoiceTable";
@@ -6,16 +7,27 @@ import { Switch } from 'antd';
 import { PlusIcon, EyeIcon, SparklesIcon, TableCellsIcon } from '@heroicons/react/24/solid'
 import { DownloadOutlined } from '@ant-design/icons';
 import { QueueListIcon } from "@heroicons/react/16/solid";
+import "../../index.css"
 import "./InvoiceTable.css";
 
 const InvoiceTable = () => {
-
+    // Create a ref to access ProTable instance
+    // State to track if the filter is enabled or disabled
+    const [filterEnabled, setFilterEnabled] = useState(false);
+    const toggleColumnRef = useRef();
     // Sample invoice data
     const data = dataInvoiceTable
     // Helper function to generate unique filters
     const generateFilters = (data, key) => {
         const uniqueValues = Array.from(new Set(data.map(item => item[key])));
         return uniqueValues.map(value => ({ text: value, value }));
+    };
+
+    // Function to handle switch toggle
+    const handleFilterToggle = (checked) => {
+        setFilterEnabled(checked);
+        // You can perform additional logic here when the filter is enabled/disabled
+        console.log(`Filter is ${checked ? 'enabled' : 'disabled'}`);
     };
 
     const renderAttachmentButton = (attachment) => {
@@ -41,54 +53,75 @@ const InvoiceTable = () => {
             dataIndex: "invoiceNumber",
             key: "invoiceNumber",
             width: 200,
-            sorter: (a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber),
-            filters: generateFilters(data, "invoiceNumber"),
+            sorter: filterEnabled ? (a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber) : [],
+            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
             onFilter: (value, record) => record.invoiceNumber === value,
+            onHeaderCell: () => ({
+                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
+            }),
         },
         {
             title: "Invoice Date",
             dataIndex: "date",
             key: "date",
-            sorter: (a, b) => new Date(a.date) - new Date(b.date),
+            sorter: filterEnabled ? (a, b) => new Date(a.date) - new Date(b.date) : [],
+            onHeaderCell: () => ({
+                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
+            }),
         },
         {
             title: "Requester",
             dataIndex: "customer",
             key: "customer",
-            filters: generateFilters(data, "customer"),
+            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
             onFilter: (value, record) => record.customer === value,
+            onHeaderCell: () => ({
+                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
+            }),
 
         },
         {
             title: "Merchant",
             dataIndex: "merchant",
             key: "merchant",
-            filters: generateFilters(data, "merchant"),
+            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
             onFilter: (value, record) => record.merchant === value,
+            onHeaderCell: () => ({
+                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
+            }),
 
         },
         {
             title: "Budget",
             dataIndex: "budget",
             key: "budget",
-            filters: generateFilters(data, "budget"),
+            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
             onFilter: (value, record) => record.budget === value,
+            onHeaderCell: () => ({
+                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
+            }),
         },
         {
             title: "Category",
             dataIndex: "category",
             key: "category",
-            filters: generateFilters(data, "category"),
+            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
             onFilter: (value, record) => record.category === value,
+            onHeaderCell: () => ({
+                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
+            }),
 
         },
         {
             title: "Attachment",
             dataIndex: "attachment",
             key: "attachment",
-            filters: generateFilters(data, "attachment"),
+            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
             onFilter: (value, record) => record.attachment === value,
             render: (attachment) => renderAttachmentButton(attachment),
+            onHeaderCell: () => ({
+                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
+            }),
         },
         {
             title: "Amount",
@@ -101,15 +134,21 @@ const InvoiceTable = () => {
                 }
                 return `SGD ${parsedAmount.toFixed(2)}`;
             },
-            sorter: (a, b) => parseFloat(a.amount.replace("$", "")) - parseFloat(b.amount.replace("$", "")),
+            sorter: filterEnabled ? (a, b) => parseFloat(a.amount.replace("$", "")) - parseFloat(b.amount.replace("$", "")) : [],
+            onHeaderCell: () => ({
+                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
+            }),
         },
         {
             title: "Status",
             dataIndex: "status",
             key: "status",
-            filters: generateFilters(data, "status"),
+            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
             onFilter: (value, record) => record.status === value,
-            sorter: (a, b) => a.status.localeCompare(b.status),
+            sorter: filterEnabled ? (a, b) => a.status.localeCompare(b.status) : [],
+            onHeaderCell: () => ({
+                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
+            }),
         },
     ];
 
@@ -120,7 +159,7 @@ const InvoiceTable = () => {
                 <div className="flex items-center space-x-2">
                     {/* Button with AI Gemini gradient border */}
                     <Button
-                        className="justify-start border-1 border-blue-500 rounded-[4px] text-gray-900 font-normal px-3 pr-4"
+                        className="justify-start border-1 border-blue-500 rounded-[4px] text-gray-900 font-normal px-3"
                         type="default"
                         icon={<SparklesIcon className="size-4 text-blue-500" />}
                         size="medium"
@@ -147,6 +186,21 @@ const InvoiceTable = () => {
                     >
                         Columns
                     </Button>
+                    {/* 
+                    <Button
+                        type="primary"
+                        onClick={() => {
+                            if (toggleColumnRef.current) {
+                                toggleColumnRef.current.
+                                console.log(toggleColumnRef.current)
+                            } else {
+                                console.log(toggleColumnRef.current)
+                            }
+                        }}
+                        style={{ marginBottom: 16 }}
+                    >
+                        Open Table Settings
+                    </Button> */}
 
                     {/* Button with Group By label */}
                     <Button
@@ -165,9 +219,10 @@ const InvoiceTable = () => {
                     <label className="flex items-center space-x-2">
                         <span className="text-sm font-normal">Filter</span>
                         <Switch
-                            defaultChecked={false}
+                            defaultChecked={filterEnabled}
                             checkedChildren="On"
                             unCheckedChildren="Off"
+                            onChange={handleFilterToggle}
                             className="custom-toggle"
                         />
                     </label>
@@ -185,6 +240,7 @@ const InvoiceTable = () => {
             </div>
 
             <ProTable
+                actionRef={toggleColumnRef}
                 columns={columns}
                 dataSource={data}
                 rowKey="id"
