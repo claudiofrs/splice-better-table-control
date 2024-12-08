@@ -6,7 +6,7 @@ import enUS from "antd/locale/en_US"; // English locale for Ant Design
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import App from "./pages/app/App";
-import Home from "./pages/home/home";
+import Home from "./pages/home/Home";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
