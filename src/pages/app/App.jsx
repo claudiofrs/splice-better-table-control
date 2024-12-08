@@ -1,64 +1,34 @@
-import { Button } from "antd";
-import { ProForm, ProFormText } from "@ant-design/pro-components";
-import { Layout } from "antd";
-import { ProLayout, PageContainer } from "@ant-design/pro-components";
-import { HomeOutlined, UserOutlined, GithubOutlined } from "@ant-design/icons";
+import "../../index.css"
+import Sidebar from "../../components/Sidebar/Sidebar"
+import Topbar from "../../components/Topbar/Topbar";
+// import DataTable from "../../components/DataTable/DataTable";
+import InvoiceTable from "../../components/DummyTable/InvoiceTable";
+import HorizontalTab from "../../components/Tabs/HorizontalTab";
 import "./App.css";
 
-const { Header, Sider, Content } = Layout;
-
 function App() {
+  const tabData = [
+    { label: "Invoices" },
+    { label: "Reimbursements" },
+    { label: "Cards" },
+    // You can add more tabs here
+  ];
   return (
-    <>
-      <ProLayout
-        title="My Application"
-        logo="https://avatars.githubusercontent.com/u/19315843?s=200&v=4" // Replace with your logo URL
-        layout="side" // Sidebar layout
-        location={{ pathname: window.location.pathname }} // Make sure to sync with the current path
-        menuDataRender={() => [
-          {
-            path: "/",
-            name: "Home",
-            icon: <HomeOutlined />,
-          },
-          {
-            path: "/about",
-            name: "About",
-            icon: <UserOutlined />,
-          },
-          {
-            path: "/contact",
-            name: "Contact",
-            icon: <GithubOutlined />,
-          },
-        ]}
-        // Menu item styling
-        menuItemRender={(menuItemProps, defaultDom) => (
-          <div style={{ color: "white" }}>{defaultDom}</div> // White color for menu item text
-        )}
-      >
-        <PageContainer
-          content="Welcome to the ProLayout component"
-          tabList={[
-            {
-              tab: "base information",
-              key: "base",
-            },
-            {
-              tab: "details",
-              key: "info",
-            },
-          ]}
-          extra={[
-            <Button key="3">Operation</Button>,
-            <Button key="2">Operation</Button>,
-            <Button key="1" type="primary">
-              Primary Action
-            </Button>,
-          ]}
-        ></PageContainer>
-      </ProLayout>
-    </>
+    <div className="flex h-screen">
+      <Sidebar></Sidebar>
+
+      {/* Content Area */}
+      <main className="flex-1 bg-white">
+        <Topbar />
+        <div className="p-4 py-4">
+          <h1 className="text-2xl font-semibold mb-4">
+            Transactions
+          </h1>
+          <HorizontalTab tabData={tabData} />
+          <InvoiceTable></InvoiceTable>
+        </div>
+      </main>
+    </div>
   );
 }
 
