@@ -2,6 +2,7 @@ import "../../index.css"
 import Sidebar from "../../components/Sidebar/Sidebar"
 import Topbar from "../../components/Topbar/Topbar";
 // import DataTable from "../../components/DataTable/DataTable";
+import InvoiceTable from "../../components/DummyTable/InvoiceTable";
 import HorizontalTab from "../../components/Tabs/HorizontalTab";
 import "./App.css";
 
@@ -24,6 +25,7 @@ function App() {
             Transactions
           </h1>
           <HorizontalTab tabData={tabData} />
+          <InvoiceTable></InvoiceTable>
         </div>
       </main>
     </div>
