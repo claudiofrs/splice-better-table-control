@@ -33,7 +33,7 @@ function Topbar() {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-md z-[1] mt-3 w-52 p-2 shadow gap-2"
+            className="menu menu-sm dropdown-content bg-base-100 rounded-md z-50 mt-3 w-52 p-2 shadow gap-2"
           >
             <li>
               <div className="block">
