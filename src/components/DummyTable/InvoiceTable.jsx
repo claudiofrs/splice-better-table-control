@@ -112,16 +112,24 @@ const InvoiceTable = () => {
             title: "Date",
             dataIndex: "date",
             key: "date",
+            sorter: (a, b) => new Date(a.date) - new Date(b.date),
         },
         {
             title: "Amount",
             dataIndex: "amount",
             key: "amount",
+            sorter: (a, b) => parseFloat(a.amount.replace("$", "")) - parseFloat(b.amount.replace("$", "")),
         },
         {
             title: "Status",
             dataIndex: "status",
             key: "status",
+            filters: [
+                { text: "Paid", value: "Paid" },
+                { text: "Pending", value: "Pending" },
+                { text: "Overdue", value: "Overdue" },
+            ],
+            onFilter: (value, record) => record.status === value,
         },
     ];
 
