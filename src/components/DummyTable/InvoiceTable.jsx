@@ -1,45 +1,44 @@
 import React, { useState } from "react";
+import { Input, Checkbox, Button } from "antd";
 import { ProTable } from "@ant-design/pro-components";
 import "antd/dist/reset.css";
-import { Input, Checkbox } from "antd";
 import dataInvoiceTable from "./dataInvoiceTable";
 
-// Input component for search functionality with dynamic trigger type
-const FilterInput = ({ columnKey, value, onChange, onSearch, triggerType = 'enter', filters = [] }) => {
+// FilterInput Component for searching and filtering
+const FilterInput = ({ value, onChange, onSearch, filters, onFilterChange }) => {
+    const [searchValue, setSearchValue] = useState(value || "");
+
+    // Handle search input change
     const handleInputChange = (e) => {
-        onChange(e.target.value);
+        const newSearchValue = e.target.value;
+        setSearchValue(newSearchValue);
+        onChange(newSearchValue); // Update parent state for search value
     };
 
-    const handleKeyUp = (e) => {
-        if (e.key === "Enter" && triggerType === 'enter') {
-            onSearch();
-        }
+    // Handle checkbox change
+    const handleCheckboxChange = (checkedValues) => {
+        onFilterChange(checkedValues); // Update selected filters (checkboxes)
     };
 
-    const handleBlur = () => {
-        if (triggerType === 'blur') {
-            onSearch();
-        }
-    };
-
-    const handleFilterChange = (checkedValues) => {
-        onSearch(checkedValues);
+    // Trigger search when user presses enter or blur
+    const handleSearch = () => {
+        onSearch(searchValue);
     };
 
     return (
         <div style={{ padding: 8 }}>
             {/* Search Input */}
             <Input
-                placeholder={`Search ${columnKey}`}
-                value={value}
+                placeholder="Search Invoice Number"
+                value={searchValue}
                 onChange={handleInputChange}
-                onKeyUp={handleKeyUp}
-                onBlur={handleBlur}
+                onBlur={handleSearch}
+                onPressEnter={handleSearch}
             />
-            {/* Checkbox list for filtering */}
+            {/* Checkbox List for Available Invoice Numbers */}
             <Checkbox.Group
                 options={filters}
-                onChange={handleFilterChange}
+                onChange={handleCheckboxChange}
                 style={{ marginTop: 8 }}
             />
         </div>
@@ -47,6 +46,7 @@ const FilterInput = ({ columnKey, value, onChange, onSearch, triggerType = 'ente
 };
 
 const InvoiceTable = () => {
+
     // Sample invoice data
     const data = dataInvoiceTable
     // Helper function to generate unique filters
@@ -54,6 +54,26 @@ const InvoiceTable = () => {
         const uniqueValues = Array.from(new Set(data.map(item => item[key])));
         return uniqueValues.map(value => ({ text: value, value }));
     };
+
+    const [selectedInvoiceNumbers, setSelectedInvoiceNumbers] = useState([]);
+
+    // Extract unique invoice numbers from the data for the filter
+    const getInvoiceNumbers = () => {
+        return [...new Set(data.map(item => item.invoiceNumber))]; // Get unique invoice numbers
+    };
+
+    // Handle the filter search (search by invoice number text)
+    const handleSearch = (value) => {
+        setSelectedInvoiceNumbers(
+            getInvoiceNumbers().filter(invoice => invoice.includes(value))
+        );
+    };
+
+    // Handle the checkbox filter change (select/unselect invoice numbers)
+    const handleFilterChange = (checkedValues) => {
+        setSelectedInvoiceNumbers(checkedValues);
+    };
+
 
     // Table columns
     const columns = [
@@ -64,14 +84,14 @@ const InvoiceTable = () => {
             sorter: (a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber),
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
                 <FilterInput
-                    columnKey="Invoice Number"
                     value={selectedKeys[0]}
                     onChange={value => setSelectedKeys(value ? [value] : [])}
-                    onSearch={() => confirm()}
-                    triggerType="enter"
+                    onSearch={handleSearch}
+                    filters={getInvoiceNumbers().map(val => ({ label: val, value: val }))}
+                    onFilterChange={handleFilterChange}
                 />
             ),
-            onFilter: (value, record) => record.invoiceNumber.toLowerCase().includes(value.toLowerCase()),
+            onFilter: (value, record) => selectedInvoiceNumbers.includes(record.invoiceNumber), // Filter by selected invoice numbers
         },
         {
             title: "Invoice Date",
