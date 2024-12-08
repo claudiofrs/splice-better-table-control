@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ProTable } from "@ant-design/pro-components";
 import "antd/dist/reset.css";
 import dataInvoiceTable from "./dataInvoiceTable";
@@ -73,7 +73,7 @@ const InvoiceTable = () => {
             title: "Requester",
             dataIndex: "customer",
             key: "customer",
-            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
+            filters: filterEnabled ? generateFilters(data, "customer") : [],  // Conditional filters
             onFilter: (value, record) => record.customer === value,
             onHeaderCell: () => ({
                 className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
@@ -84,7 +84,7 @@ const InvoiceTable = () => {
             title: "Merchant",
             dataIndex: "merchant",
             key: "merchant",
-            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
+            filters: filterEnabled ? generateFilters(data, "merchant") : [],  // Conditional filters
             onFilter: (value, record) => record.merchant === value,
             onHeaderCell: () => ({
                 className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
@@ -95,7 +95,7 @@ const InvoiceTable = () => {
             title: "Budget",
             dataIndex: "budget",
             key: "budget",
-            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
+            filters: filterEnabled ? generateFilters(data, "budget") : [],  // Conditional filters
             onFilter: (value, record) => record.budget === value,
             onHeaderCell: () => ({
                 className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
@@ -105,7 +105,7 @@ const InvoiceTable = () => {
             title: "Category",
             dataIndex: "category",
             key: "category",
-            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
+            filters: filterEnabled ? generateFilters(data, "category") : [],  // Conditional filters
             onFilter: (value, record) => record.category === value,
             onHeaderCell: () => ({
                 className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
@@ -116,7 +116,7 @@ const InvoiceTable = () => {
             title: "Attachment",
             dataIndex: "attachment",
             key: "attachment",
-            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
+            filters: filterEnabled ? generateFilters(data, "attachment") : [],  // Conditional filters
             onFilter: (value, record) => record.attachment === value,
             render: (attachment) => renderAttachmentButton(attachment),
             onHeaderCell: () => ({
