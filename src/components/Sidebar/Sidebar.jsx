@@ -14,9 +14,15 @@ function Sidebar() {
         </div>
         <SidebarMenuItem href="#home" label="Home" state="default" />
         <SidebarMenuItem href="#transactions" label="Transactions" state="active" />
+        <SidebarMenuItem href="#approval" label="Approvals" state="default" />
         <SidebarMenuItem href="#reports" label="Reports" state="default" />
+        <hr className="opacity-10" />
         <SidebarMenuItem href="#invoices" label="Invoices" state="default" />
-        <SidebarMenuItem href="#approval" label="Approval Policies" state="default" />
+        <SidebarMenuItem href="#reimbursements" label="Reimbursements" state="default" />
+        <hr className="opacity-10" />
+        <SidebarMenuItem href="#budgets" label="Budgets" state="default" />
+        <SidebarMenuItem href="#companySettings" label="Users" state="default" />
+        <SidebarMenuItem href="#approvalPolicies" label="Approval Policies" state="default" />
       </div>
       <div className="flex flex-col space-y-2 py-2">
         <SidebarMenuItem href="#companySettings" label="Company Settings" state="default" />

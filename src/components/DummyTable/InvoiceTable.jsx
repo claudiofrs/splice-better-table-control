@@ -143,7 +143,7 @@ const InvoiceTable = () => {
             title: "Status",
             dataIndex: "status",
             key: "status",
-            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
+            filters: filterEnabled ? generateFilters(data, "status") : [],  // Conditional filters
             onFilter: (value, record) => record.status === value,
             sorter: filterEnabled ? (a, b) => a.status.localeCompare(b.status) : [],
             onHeaderCell: () => ({
@@ -160,12 +160,12 @@ const InvoiceTable = () => {
                     <div className="flex items-center space-x-2">
                         {/* Button with AI Gemini gradient border */}
                         <Button
-                            className="justify-start border-1 border-blue-500 rounded-[4px] text-gray-900 font-normal px-3"
+                            className="justify-start border-1 border-blue-500 rounded-[4px] text-gray-900 font-normal pl-2 pr-3 shadow-sm"
                             type="default"
                             icon={<SparklesIcon className="size-4 text-blue-500" />}
                             size="medium"
                         >
-                            Search and modify your data view with Summit AI
+                            Search data or customize view with Summit AI
                         </Button>
 
                         {/* Button with Chevron down icon */}
@@ -187,21 +187,6 @@ const InvoiceTable = () => {
                         >
                             Columns
                         </Button>
-                        {/* 
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            if (toggleColumnRef.current) {
-                                toggleColumnRef.current.
-                                console.log(toggleColumnRef.current)
-                            } else {
-                                console.log(toggleColumnRef.current)
-                            }
-                        }}
-                        style={{ marginBottom: 16 }}
-                    >
-                        Open Table Settings
-                    </Button> */}
 
                         {/* Button with Group By label */}
                         <Button
