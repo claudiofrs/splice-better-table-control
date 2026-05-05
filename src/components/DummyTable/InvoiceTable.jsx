@@ -1,34 +1,92 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { ProTable } from "@ant-design/pro-components";
 import "antd/dist/reset.css";
 import dataInvoiceTable from "./dataInvoiceTable";
-import { Button } from 'antd';
-import { Switch } from 'antd';
-import { PlusIcon, EyeIcon, SparklesIcon, TableCellsIcon } from '@heroicons/react/24/solid'
+import { Button, Checkbox, DatePicker, Drawer, InputNumber, Radio } from 'antd';
+import { PlusIcon, EyeIcon, SparklesIcon, TableCellsIcon, FunnelIcon } from '@heroicons/react/24/solid'
 import { DownloadOutlined } from '@ant-design/icons';
 import { QueueListIcon } from "@heroicons/react/16/solid";
 import "../../index.css"
 import "./InvoiceTable.css";
 
+const { RangePicker } = DatePicker;
+
+const defaultFilters = {
+    status: [],
+    date: [null, null],
+    customer: [],
+    merchant: [],
+    budget: [],
+    category: [],
+    attachment: null,
+    amount: [null, null],
+    invoiceNumber: [],
+};
+
+const countActiveFilters = (filters) => {
+    let count = 0;
+    if (filters.status.length > 0) count++;
+    if (filters.date[0] || filters.date[1]) count++;
+    if (filters.customer.length > 0) count++;
+    if (filters.merchant.length > 0) count++;
+    if (filters.budget.length > 0) count++;
+    if (filters.category.length > 0) count++;
+    if (filters.attachment !== null) count++;
+    if (filters.amount[0] !== null || filters.amount[1] !== null) count++;
+    if (filters.invoiceNumber.length > 0) count++;
+    return count;
+};
+
 const InvoiceTable = () => {
-    // Create a ref to access ProTable instance
-    // State to track if the filter is enabled or disabled
-    const [filterEnabled, setFilterEnabled] = useState(false);
     const toggleColumnRef = useRef();
-    // Sample invoice data
-    const data = dataInvoiceTable
-    // Helper function to generate unique filters
-    const generateFilters = (data, key) => {
-        const uniqueValues = Array.from(new Set(data.map(item => item[key])));
-        return uniqueValues.map(value => ({ text: value, value }));
+    const data = dataInvoiceTable;
+
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [pendingFilters, setPendingFilters] = useState(defaultFilters);
+    const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
+
+    const getUniqueValues = (key) => [...new Set(data.map(item => item[key]))];
+
+    const filteredData = useMemo(() => {
+        return data.filter(record => {
+            if (appliedFilters.status.length > 0 && !appliedFilters.status.includes(record.status)) return false;
+            if (appliedFilters.customer.length > 0 && !appliedFilters.customer.includes(record.customer)) return false;
+            if (appliedFilters.merchant.length > 0 && !appliedFilters.merchant.includes(record.merchant)) return false;
+            if (appliedFilters.budget.length > 0 && !appliedFilters.budget.includes(record.budget)) return false;
+            if (appliedFilters.category.length > 0 && !appliedFilters.category.includes(record.category)) return false;
+            if (appliedFilters.invoiceNumber.length > 0 && !appliedFilters.invoiceNumber.includes(record.invoiceNumber)) return false;
+            if (appliedFilters.attachment !== null && record.attachment !== appliedFilters.attachment) return false;
+            if (appliedFilters.date[0] || appliedFilters.date[1]) {
+                const recordDate = record.date;
+                if (appliedFilters.date[0] && recordDate < appliedFilters.date[0].format('YYYY-MM-DD')) return false;
+                if (appliedFilters.date[1] && recordDate > appliedFilters.date[1].format('YYYY-MM-DD')) return false;
+            }
+            if (appliedFilters.amount[0] !== null && parseFloat(record.amount) < appliedFilters.amount[0]) return false;
+            if (appliedFilters.amount[1] !== null && parseFloat(record.amount) > appliedFilters.amount[1]) return false;
+            return true;
+        });
+    }, [appliedFilters]);
+
+    const openDrawer = () => {
+        setPendingFilters(appliedFilters);
+        setDrawerOpen(true);
     };
 
-    // Function to handle switch toggle
-    const handleFilterToggle = (checked) => {
-        setFilterEnabled(checked);
-        // You can perform additional logic here when the filter is enabled/disabled
-        console.log(`Filter is ${checked ? 'enabled' : 'disabled'}`);
+    const handleApply = () => {
+        setAppliedFilters(pendingFilters);
+        setDrawerOpen(false);
     };
+
+    const handleReset = () => {
+        setPendingFilters(defaultFilters);
+    };
+
+    const setPending = (key, value) => {
+        setPendingFilters(prev => ({ ...prev, [key]: value }));
+    };
+
+    const pendingCount = countActiveFilters(pendingFilters);
+    const appliedCount = countActiveFilters(appliedFilters);
 
     const renderAttachmentButton = (attachment) => {
         if (attachment === "true") {
@@ -37,91 +95,53 @@ const InvoiceTable = () => {
                     View
                 </Button>
             );
-        } else {
-            return (
-                <Button type="default" icon={<PlusIcon className="size-4 text-slate-600" />} size="small">
-                    Add
-                </Button>
-            );
         }
+        return (
+            <Button type="default" icon={<PlusIcon className="size-4 text-slate-600" />} size="small">
+                Add
+            </Button>
+        );
     };
 
-    // Table columns
     const columns = [
         {
             title: "Invoice Number",
             dataIndex: "invoiceNumber",
             key: "invoiceNumber",
             width: 200,
-            sorter: filterEnabled ? (a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber) : [],
-            filters: filterEnabled ? generateFilters(data, "invoiceNumber") : [],  // Conditional filters
-            onFilter: (value, record) => record.invoiceNumber === value,
-            onHeaderCell: () => ({
-                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
-            }),
+            sorter: (a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber),
         },
         {
             title: "Invoice Date",
             dataIndex: "date",
             key: "date",
-            sorter: filterEnabled ? (a, b) => new Date(a.date) - new Date(b.date) : [],
-            onHeaderCell: () => ({
-                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
-            }),
+            sorter: (a, b) => new Date(a.date) - new Date(b.date),
         },
         {
             title: "Requester",
             dataIndex: "customer",
             key: "customer",
-            filters: filterEnabled ? generateFilters(data, "customer") : [],  // Conditional filters
-            onFilter: (value, record) => record.customer === value,
-            onHeaderCell: () => ({
-                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
-            }),
-
         },
         {
             title: "Merchant",
             dataIndex: "merchant",
             key: "merchant",
-            filters: filterEnabled ? generateFilters(data, "merchant") : [],  // Conditional filters
-            onFilter: (value, record) => record.merchant === value,
-            onHeaderCell: () => ({
-                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
-            }),
-
         },
         {
             title: "Budget",
             dataIndex: "budget",
             key: "budget",
-            filters: filterEnabled ? generateFilters(data, "budget") : [],  // Conditional filters
-            onFilter: (value, record) => record.budget === value,
-            onHeaderCell: () => ({
-                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
-            }),
         },
         {
             title: "Category",
             dataIndex: "category",
             key: "category",
-            filters: filterEnabled ? generateFilters(data, "category") : [],  // Conditional filters
-            onFilter: (value, record) => record.category === value,
-            onHeaderCell: () => ({
-                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
-            }),
-
         },
         {
             title: "Attachment",
             dataIndex: "attachment",
             key: "attachment",
-            filters: filterEnabled ? generateFilters(data, "attachment") : [],  // Conditional filters
-            onFilter: (value, record) => record.attachment === value,
             render: (attachment) => renderAttachmentButton(attachment),
-            onHeaderCell: () => ({
-                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
-            }),
         },
         {
             title: "Amount",
@@ -129,26 +149,16 @@ const InvoiceTable = () => {
             key: "amount",
             render: (amount) => {
                 const parsedAmount = parseFloat(amount);
-                if (isNaN(parsedAmount)) {
-                    return "NaN"; // Fallback if invalid
-                }
+                if (isNaN(parsedAmount)) return "NaN";
                 return `SGD ${parsedAmount.toFixed(2)}`;
             },
-            sorter: filterEnabled ? (a, b) => parseFloat(a.amount.replace("$", "")) - parseFloat(b.amount.replace("$", "")) : [],
-            onHeaderCell: () => ({
-                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
-            }),
+            sorter: (a, b) => parseFloat(a.amount) - parseFloat(b.amount),
         },
         {
             title: "Status",
             dataIndex: "status",
             key: "status",
-            filters: filterEnabled ? generateFilters(data, "status") : [],  // Conditional filters
-            onFilter: (value, record) => record.status === value,
-            sorter: filterEnabled ? (a, b) => a.status.localeCompare(b.status) : [],
-            onHeaderCell: () => ({
-                className: filterEnabled ? 'filter-enabled-header' : 'filter-disabled-header', // Dynamically set class
-            }),
+            sorter: (a, b) => a.status.localeCompare(b.status),
         },
     ];
 
@@ -158,7 +168,6 @@ const InvoiceTable = () => {
                 <div className="flex items-center justify-between space-x-4 py-1">
                     {/* Left Group Control */}
                     <div className="flex items-center space-x-2">
-                        {/* Button with AI Gemini gradient border */}
                         <Button
                             className="justify-start border-1 border-blue-500 rounded-[4px] text-gray-900 font-normal pl-2 pr-3 shadow-sm"
                             type="default"
@@ -168,7 +177,6 @@ const InvoiceTable = () => {
                             Search data or customize view with Summit AI
                         </Button>
 
-                        {/* Button with Chevron down icon */}
                         <Button
                             className="flex items-center font-normal rounded-[4px] px-3"
                             type="default"
@@ -178,7 +186,6 @@ const InvoiceTable = () => {
                             Change View
                         </Button>
 
-                        {/* Button with Columns label */}
                         <Button
                             className="flex items-center font-normal rounded-[4px]"
                             type="default"
@@ -188,7 +195,6 @@ const InvoiceTable = () => {
                             Columns
                         </Button>
 
-                        {/* Button with Group By label */}
                         <Button
                             className="flex items-center font-normal rounded-[4px]"
                             type="default"
@@ -201,19 +207,16 @@ const InvoiceTable = () => {
 
                     {/* Right Group Control */}
                     <div className="flex items-center space-x-4">
-                        {/* Toggle Switch with custom color change */}
-                        <label className="flex items-center space-x-2">
-                            <span className="text-sm font-normal">Filter</span>
-                            <Switch
-                                defaultChecked={filterEnabled}
-                                checkedChildren="On"
-                                unCheckedChildren="Off"
-                                onChange={handleFilterToggle}
-                                className="custom-toggle"
-                            />
-                        </label>
+                        <Button
+                            className="flex items-center font-normal rounded-[4px]"
+                            type={appliedCount > 0 ? "primary" : "default"}
+                            icon={<FunnelIcon className="size-4" />}
+                            size="medium"
+                            onClick={openDrawer}
+                        >
+                            Filter{appliedCount > 0 ? ` (${appliedCount})` : ""}
+                        </Button>
 
-                        {/* Button with Download icon */}
                         <Button
                             className="rounded-[8px] bg-primary"
                             type="primary"
@@ -224,19 +227,223 @@ const InvoiceTable = () => {
                         </Button>
                     </div>
                 </div>
+
                 <ProTable
                     actionRef={toggleColumnRef}
                     columns={columns}
-                    dataSource={data}
+                    dataSource={filteredData}
                     rowKey="id"
-                    pagination={{
-                        pageSize: 10, // Number of items per page
-                    }}
-                    search={false} // Disable search functionality for simplicity
-                    options={false} // Disable default toolbar
+                    pagination={{ pageSize: 10 }}
+                    search={false}
+                    options={false}
                 />
             </div>
 
+            <Drawer
+                title="Filter"
+                placement="right"
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                mask={true}
+                width={360}
+                styles={{ body: { padding: '16px 20px' } }}
+                footer={
+                    <div className="flex flex-col gap-2 py-1">
+                        <Button
+                            type="primary"
+                            block
+                            size="large"
+                            onClick={handleApply}
+                        >
+                            Apply Filter{pendingCount > 0 ? ` (${pendingCount})` : ""}
+                        </Button>
+                        <Button
+                            type="default"
+                            block
+                            size="large"
+                            onClick={handleReset}
+                        >
+                            Reset
+                        </Button>
+                    </div>
+                }
+            >
+                <div className="flex flex-col divide-y divide-gray-100">
+
+                    {/* Status */}
+                    <div className="py-4">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Status</p>
+                        <div className="flex flex-col gap-2">
+                            {getUniqueValues("status").map(val => (
+                                <Checkbox
+                                    key={val}
+                                    checked={pendingFilters.status.includes(val)}
+                                    onChange={(e) => {
+                                        const next = e.target.checked
+                                            ? [...pendingFilters.status, val]
+                                            : pendingFilters.status.filter(v => v !== val);
+                                        setPending("status", next);
+                                    }}
+                                >
+                                    {val}
+                                </Checkbox>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Invoice Date */}
+                    <div className="py-4">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Invoice Date</p>
+                        <RangePicker
+                            className="w-full"
+                            value={pendingFilters.date}
+                            onChange={(dates) => setPending("date", dates || [null, null])}
+                        />
+                    </div>
+
+                    {/* Requester */}
+                    <div className="py-4">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Requester</p>
+                        <div className="flex flex-col gap-2">
+                            {getUniqueValues("customer").map(val => (
+                                <Checkbox
+                                    key={val}
+                                    checked={pendingFilters.customer.includes(val)}
+                                    onChange={(e) => {
+                                        const next = e.target.checked
+                                            ? [...pendingFilters.customer, val]
+                                            : pendingFilters.customer.filter(v => v !== val);
+                                        setPending("customer", next);
+                                    }}
+                                >
+                                    {val}
+                                </Checkbox>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Merchant */}
+                    <div className="py-4">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Merchant</p>
+                        <div className="flex flex-col gap-2">
+                            {getUniqueValues("merchant").map(val => (
+                                <Checkbox
+                                    key={val}
+                                    checked={pendingFilters.merchant.includes(val)}
+                                    onChange={(e) => {
+                                        const next = e.target.checked
+                                            ? [...pendingFilters.merchant, val]
+                                            : pendingFilters.merchant.filter(v => v !== val);
+                                        setPending("merchant", next);
+                                    }}
+                                >
+                                    {val}
+                                </Checkbox>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Budget */}
+                    <div className="py-4">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Budget</p>
+                        <div className="flex flex-col gap-2">
+                            {getUniqueValues("budget").map(val => (
+                                <Checkbox
+                                    key={val}
+                                    checked={pendingFilters.budget.includes(val)}
+                                    onChange={(e) => {
+                                        const next = e.target.checked
+                                            ? [...pendingFilters.budget, val]
+                                            : pendingFilters.budget.filter(v => v !== val);
+                                        setPending("budget", next);
+                                    }}
+                                >
+                                    {val}
+                                </Checkbox>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Category */}
+                    <div className="py-4">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Category</p>
+                        <div className="flex flex-col gap-2">
+                            {getUniqueValues("category").map(val => (
+                                <Checkbox
+                                    key={val}
+                                    checked={pendingFilters.category.includes(val)}
+                                    onChange={(e) => {
+                                        const next = e.target.checked
+                                            ? [...pendingFilters.category, val]
+                                            : pendingFilters.category.filter(v => v !== val);
+                                        setPending("category", next);
+                                    }}
+                                >
+                                    {val}
+                                </Checkbox>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Attachment */}
+                    <div className="py-4">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Attachment</p>
+                        <Radio.Group
+                            value={pendingFilters.attachment}
+                            onChange={(e) => setPending("attachment", e.target.value)}
+                            className="flex flex-col gap-2"
+                        >
+                            <Radio value={null}>All</Radio>
+                            <Radio value="true">Has attachment</Radio>
+                            <Radio value="false">No attachment</Radio>
+                        </Radio.Group>
+                    </div>
+
+                    {/* Amount */}
+                    <div className="py-4">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Amount (SGD)</p>
+                        <div className="flex items-center gap-2">
+                            <InputNumber
+                                className="w-full"
+                                placeholder="Min"
+                                min={0}
+                                value={pendingFilters.amount[0]}
+                                onChange={(val) => setPending("amount", [val, pendingFilters.amount[1]])}
+                            />
+                            <span className="text-gray-400 shrink-0">—</span>
+                            <InputNumber
+                                className="w-full"
+                                placeholder="Max"
+                                min={0}
+                                value={pendingFilters.amount[1]}
+                                onChange={(val) => setPending("amount", [pendingFilters.amount[0], val])}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Invoice Number */}
+                    <div className="py-4">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Invoice Number</p>
+                        <div className="flex flex-col gap-2">
+                            {getUniqueValues("invoiceNumber").map(val => (
+                                <Checkbox
+                                    key={val}
+                                    checked={pendingFilters.invoiceNumber.includes(val)}
+                                    onChange={(e) => {
+                                        const next = e.target.checked
+                                            ? [...pendingFilters.invoiceNumber, val]
+                                            : pendingFilters.invoiceNumber.filter(v => v !== val);
+                                        setPending("invoiceNumber", next);
+                                    }}
+                                >
+                                    {val}
+                                </Checkbox>
+                            ))}
+                        </div>
+                    </div>
+
+                </div>
+            </Drawer>
         </>
     );
 };
