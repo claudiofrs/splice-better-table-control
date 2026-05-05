@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { ProTable } from "@ant-design/pro-components";
 import "antd/dist/reset.css";
 import dataInvoiceTable from "./dataInvoiceTable";
-import { Button, Checkbox, DatePicker, Drawer, InputNumber, Radio } from 'antd';
+import { Button, Checkbox, DatePicker, Drawer, InputNumber, Radio, Select } from 'antd';
 import { PlusIcon, EyeIcon, SparklesIcon, TableCellsIcon, FunnelIcon } from '@heroicons/react/24/solid'
 import { DownloadOutlined } from '@ant-design/icons';
 import { QueueListIcon } from "@heroicons/react/16/solid";
@@ -36,6 +36,18 @@ const countActiveFilters = (filters) => {
     if (filters.invoiceNumber.length > 0) count++;
     return count;
 };
+
+const toSelectOptions = (values) => values.map(v => ({ label: v, value: v }));
+
+const searchFilter = (input, option) =>
+    option.label.toLowerCase().includes(input.toLowerCase());
+
+const multiOptionRender = (selectedValues) => (option) => (
+    <div className="flex items-center gap-2">
+        <Checkbox checked={selectedValues.includes(option.value)} onChange={() => {}} />
+        <span>{option.label}</span>
+    </div>
+);
 
 const InvoiceTable = () => {
     const toggleColumnRef = useRef();
@@ -248,15 +260,7 @@ const InvoiceTable = () => {
                 width={360}
                 styles={{ body: { padding: '16px 20px' } }}
                 footer={
-                    <div className="flex flex-col gap-2 py-1">
-                        <Button
-                            type="primary"
-                            block
-                            size="large"
-                            onClick={handleApply}
-                        >
-                            Apply Filter{pendingCount > 0 ? ` (${pendingCount})` : ""}
-                        </Button>
+                    <div className="flex items-center gap-2 py-1">
                         <Button
                             type="default"
                             block
@@ -265,142 +269,135 @@ const InvoiceTable = () => {
                         >
                             Reset
                         </Button>
+                        <Button
+                            type="primary"
+                            block
+                            size="large"
+                            onClick={handleApply}
+                        >
+                            Apply Filter{pendingCount > 0 ? ` (${pendingCount})` : ""}
+                        </Button>
                     </div>
                 }
             >
-                <div className="flex flex-col divide-y divide-gray-100">
+                <div className="flex flex-col gap-1">
 
                     {/* Status */}
-                    <div className="py-4">
+                    <div className="py-2">
                         <p className="text-sm font-medium text-gray-700 mb-3">Status</p>
-                        <div className="flex flex-col gap-2">
-                            {getUniqueValues("status").map(val => (
-                                <Checkbox
-                                    key={val}
-                                    checked={pendingFilters.status.includes(val)}
-                                    onChange={(e) => {
-                                        const next = e.target.checked
-                                            ? [...pendingFilters.status, val]
-                                            : pendingFilters.status.filter(v => v !== val);
-                                        setPending("status", next);
-                                    }}
-                                >
-                                    {val}
-                                </Checkbox>
-                            ))}
-                        </div>
+                        <Select
+                            mode="multiple"
+                            showSearch
+                            allowClear
+                            className="w-full"
+                            placeholder="Select status"
+                            options={toSelectOptions(getUniqueValues("status"))}
+                            value={pendingFilters.status}
+                            onChange={(val) => setPending("status", val)}
+                            filterOption={searchFilter}
+                            optionRender={multiOptionRender(pendingFilters.status)}
+                            menuItemSelectedIcon={null}
+                        />
                     </div>
 
                     {/* Invoice Date */}
-                    <div className="py-4">
+                    <div className="py-2">
                         <p className="text-sm font-medium text-gray-700 mb-3">Invoice Date</p>
                         <RangePicker
                             className="w-full"
+                            popupClassName="hide-picker-arrow"
                             value={pendingFilters.date}
                             onChange={(dates) => setPending("date", dates || [null, null])}
                         />
                     </div>
 
                     {/* Requester */}
-                    <div className="py-4">
+                    <div className="py-2">
                         <p className="text-sm font-medium text-gray-700 mb-3">Requester</p>
-                        <div className="flex flex-col gap-2">
-                            {getUniqueValues("customer").map(val => (
-                                <Checkbox
-                                    key={val}
-                                    checked={pendingFilters.customer.includes(val)}
-                                    onChange={(e) => {
-                                        const next = e.target.checked
-                                            ? [...pendingFilters.customer, val]
-                                            : pendingFilters.customer.filter(v => v !== val);
-                                        setPending("customer", next);
-                                    }}
-                                >
-                                    {val}
-                                </Checkbox>
-                            ))}
-                        </div>
+                        <Select
+                            mode="multiple"
+                            showSearch
+                            allowClear
+                            className="w-full"
+                            placeholder="Select requester"
+                            options={toSelectOptions(getUniqueValues("customer"))}
+                            value={pendingFilters.customer}
+                            onChange={(val) => setPending("customer", val)}
+                            filterOption={searchFilter}
+                            optionRender={multiOptionRender(pendingFilters.customer)}
+                            menuItemSelectedIcon={null}
+                        />
                     </div>
 
                     {/* Merchant */}
-                    <div className="py-4">
+                    <div className="py-2">
                         <p className="text-sm font-medium text-gray-700 mb-3">Merchant</p>
-                        <div className="flex flex-col gap-2">
-                            {getUniqueValues("merchant").map(val => (
-                                <Checkbox
-                                    key={val}
-                                    checked={pendingFilters.merchant.includes(val)}
-                                    onChange={(e) => {
-                                        const next = e.target.checked
-                                            ? [...pendingFilters.merchant, val]
-                                            : pendingFilters.merchant.filter(v => v !== val);
-                                        setPending("merchant", next);
-                                    }}
-                                >
-                                    {val}
-                                </Checkbox>
-                            ))}
-                        </div>
+                        <Select
+                            mode="multiple"
+                            showSearch
+                            allowClear
+                            className="w-full"
+                            placeholder="Select merchant"
+                            options={toSelectOptions(getUniqueValues("merchant"))}
+                            value={pendingFilters.merchant}
+                            onChange={(val) => setPending("merchant", val)}
+                            filterOption={searchFilter}
+                            optionRender={multiOptionRender(pendingFilters.merchant)}
+                            menuItemSelectedIcon={null}
+                        />
                     </div>
 
                     {/* Budget */}
-                    <div className="py-4">
+                    <div className="py-2">
                         <p className="text-sm font-medium text-gray-700 mb-3">Budget</p>
-                        <div className="flex flex-col gap-2">
-                            {getUniqueValues("budget").map(val => (
-                                <Checkbox
-                                    key={val}
-                                    checked={pendingFilters.budget.includes(val)}
-                                    onChange={(e) => {
-                                        const next = e.target.checked
-                                            ? [...pendingFilters.budget, val]
-                                            : pendingFilters.budget.filter(v => v !== val);
-                                        setPending("budget", next);
-                                    }}
-                                >
-                                    {val}
-                                </Checkbox>
-                            ))}
-                        </div>
+                        <Select
+                            mode="multiple"
+                            showSearch
+                            allowClear
+                            className="w-full"
+                            placeholder="Select budget"
+                            options={toSelectOptions(getUniqueValues("budget"))}
+                            value={pendingFilters.budget}
+                            onChange={(val) => setPending("budget", val)}
+                            filterOption={searchFilter}
+                            optionRender={multiOptionRender(pendingFilters.budget)}
+                            menuItemSelectedIcon={null}
+                        />
                     </div>
 
                     {/* Category */}
-                    <div className="py-4">
+                    <div className="py-2">
                         <p className="text-sm font-medium text-gray-700 mb-3">Category</p>
-                        <div className="flex flex-col gap-2">
-                            {getUniqueValues("category").map(val => (
-                                <Checkbox
-                                    key={val}
-                                    checked={pendingFilters.category.includes(val)}
-                                    onChange={(e) => {
-                                        const next = e.target.checked
-                                            ? [...pendingFilters.category, val]
-                                            : pendingFilters.category.filter(v => v !== val);
-                                        setPending("category", next);
-                                    }}
-                                >
-                                    {val}
-                                </Checkbox>
-                            ))}
-                        </div>
+                        <Select
+                            mode="multiple"
+                            showSearch
+                            allowClear
+                            className="w-full"
+                            placeholder="Select category"
+                            options={toSelectOptions(getUniqueValues("category"))}
+                            value={pendingFilters.category}
+                            onChange={(val) => setPending("category", val)}
+                            filterOption={searchFilter}
+                            optionRender={multiOptionRender(pendingFilters.category)}
+                            menuItemSelectedIcon={null}
+                        />
                     </div>
 
                     {/* Attachment */}
-                    <div className="py-4">
+                    <div className="py-2">
                         <p className="text-sm font-medium text-gray-700 mb-3">Attachment</p>
                         <Radio.Group
                             value={pendingFilters.attachment}
                             onChange={(e) => setPending("attachment", e.target.value)}
-                            className="flex flex-col gap-2"
                         >
-                            <Radio value={null}>All</Radio>
-                            <Radio value="true">Has attachment</Radio>
-                            <Radio value="false">No attachment</Radio>
+                            <Radio.Button value={null}>Any</Radio.Button>
+                            <Radio.Button value="true">Uploaded</Radio.Button>
+                            <Radio.Button value="false">Missing</Radio.Button>
                         </Radio.Group>
                     </div>
 
                     {/* Amount */}
-                    <div className="py-4">
+                    <div className="py-2">
                         <p className="text-sm font-medium text-gray-700 mb-3">Amount (SGD)</p>
                         <div className="flex items-center gap-2">
                             <InputNumber
@@ -422,24 +419,21 @@ const InvoiceTable = () => {
                     </div>
 
                     {/* Invoice Number */}
-                    <div className="py-4">
+                    <div className="py-2">
                         <p className="text-sm font-medium text-gray-700 mb-3">Invoice Number</p>
-                        <div className="flex flex-col gap-2">
-                            {getUniqueValues("invoiceNumber").map(val => (
-                                <Checkbox
-                                    key={val}
-                                    checked={pendingFilters.invoiceNumber.includes(val)}
-                                    onChange={(e) => {
-                                        const next = e.target.checked
-                                            ? [...pendingFilters.invoiceNumber, val]
-                                            : pendingFilters.invoiceNumber.filter(v => v !== val);
-                                        setPending("invoiceNumber", next);
-                                    }}
-                                >
-                                    {val}
-                                </Checkbox>
-                            ))}
-                        </div>
+                        <Select
+                            mode="multiple"
+                            showSearch
+                            allowClear
+                            className="w-full"
+                            placeholder="Select invoice number"
+                            options={toSelectOptions(getUniqueValues("invoiceNumber"))}
+                            value={pendingFilters.invoiceNumber}
+                            onChange={(val) => setPending("invoiceNumber", val)}
+                            filterOption={searchFilter}
+                            optionRender={multiOptionRender(pendingFilters.invoiceNumber)}
+                            menuItemSelectedIcon={null}
+                        />
                     </div>
 
                 </div>

@@ -1,1 +1,5 @@
 /* InvoiceTable styles */
+
+.hide-picker-arrow .ant-picker-arrow {
+    display: none;
+}
